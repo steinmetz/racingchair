@@ -10,10 +10,16 @@ import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import android.bluetooth.BluetoothSocket
-
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import org.jetbrains.anko.db.classParser
+import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.select
 
 
 class MainActivity : AppCompatActivity() {
+
+    var profiles = listOf<Profile>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +30,28 @@ class MainActivity : AppCompatActivity() {
 
             var intent = Intent(this, NewUserActivity::class.java)
             startActivity(intent)
+
+        }
+
+        database.use {
+
+            select("Profile").exec {
+
+                val rowParser = classParser<Profile>()
+                profiles = parseList(rowParser)
+                val aa = ProfilesAdapter( applicationContext, profiles)
+
+                user_list.setAdapter(aa)
+
+            }
+        }
+
+        user_list.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
+            var intent = Intent(this, WelcomeActivity::class.java)
+            intent.putExtra("name", profiles[position].username)
+            intent.putExtra("id", profiles[position].id)
+            startActivity(intent)
+            finish()
 
         }
 

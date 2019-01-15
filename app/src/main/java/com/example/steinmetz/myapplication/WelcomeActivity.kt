@@ -23,6 +23,7 @@ class WelcomeActivity : AppCompatActivity() {
         i= Intent(this, DriverActivityMenu::class.java)
 
         i?.putExtra("name", name)
+        i?.putExtra("id", intent.getIntExtra("id", 0))
 
 
     }

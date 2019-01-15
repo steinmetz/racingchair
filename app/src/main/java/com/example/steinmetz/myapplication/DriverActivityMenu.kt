@@ -26,6 +26,10 @@ import android.bluetooth.BluetoothDevice
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import org.jetbrains.anko.db.classParser
+import org.jetbrains.anko.db.insert
+import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.select
 
 
 class DriverActivityMenu : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -59,6 +63,21 @@ class DriverActivityMenu : AppCompatActivity(), NavigationView.OnNavigationItemS
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                 //Toast.makeText(this, view.tag.toString(), Toast.LENGTH_SHORT).show()
                 btSocket?.let { it.outputStream.write(view.tag.toString().toByteArray()) }
+
+                database.use {
+
+                     select("Profile").exec {
+
+                        var c = this.count
+
+                         val rowParser = classParser<Profile>()
+                         var profile = parseList(rowParser)
+
+                         Log.i("SSS", "P"+c)
+                    }
+                    Log.i("SSS", "P")
+                }
+
             }
 
             true
