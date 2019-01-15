@@ -24,6 +24,8 @@ import android.bluetooth.BluetoothAdapter
 import java.util.*
 import android.bluetooth.BluetoothDevice
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 
 
 class DriverActivityMenu : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -47,30 +49,36 @@ class DriverActivityMenu : AppCompatActivity(), NavigationView.OnNavigationItemS
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        drive_up.setOnClickListener {
-            Toast.makeText(this, "up", Toast.LENGTH_SHORT).show()
-            btSocket?.let { it.outputStream.write("1".toByteArray()) }
-        }
 
-        drive_down.setOnClickListener {
-            Toast.makeText(this, "down", Toast.LENGTH_SHORT).show()
-            btSocket?.let { it.outputStream.write("2".toByteArray()) }
-        }
+        var listener = View.OnTouchListener(function = { view, motionEvent ->
 
-        drive_left.setOnClickListener {
-            Toast.makeText(this, "left", Toast.LENGTH_SHORT).show()
-            btSocket?.let { it.outputStream.write("3".toByteArray()) }
-        }
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                //Toast.makeText(this, "STOP", Toast.LENGTH_SHORT).show()
+                btSocket?.let { it.outputStream.write("0".toByteArray()) }
+            }
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                //Toast.makeText(this, view.tag.toString(), Toast.LENGTH_SHORT).show()
+                btSocket?.let { it.outputStream.write(view.tag.toString().toByteArray()) }
+            }
 
-        drive_right.setOnClickListener {
-            Toast.makeText(this, "right", Toast.LENGTH_SHORT).show()
-            btSocket?.let { it.outputStream.write("4".toByteArray()) }
-        }
+            true
 
-        dance.setOnClickListener {
-            Toast.makeText(this, "dance", Toast.LENGTH_SHORT).show()
-            btSocket?.let { it.outputStream.write("5".toByteArray()) }
-        }
+        })
+
+        drive_up.tag = "1"
+        drive_up.setOnTouchListener(listener)
+
+        drive_down.tag = "2"
+        drive_down.setOnTouchListener(listener)
+
+        drive_left.tag = "3"
+        drive_left.setOnTouchListener(listener)
+
+        drive_right.tag = "4"
+        drive_right.setOnTouchListener(listener)
+
+        dance.tag = "5"
+        dance.setOnTouchListener(listener)
 
     }
 
